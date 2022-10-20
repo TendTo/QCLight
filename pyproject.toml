@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qclight"
+version = "0.0.1"
+description = "A lightweught quantum computing simulator"
+readme = "README.md"
+authors = [{ name = "TendTo", email = "casablancaernesto@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+keywords = ["quantum", "quantum computing", "numpy", "algebra", "qubit"]
+dependencies = [
+    "numpy<=1.23.4"
+]
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+style = ["black", "bumpver", "pylint", "isort", "mypy"]
+test = ["pytest"]
+docs = ["sphinx", "sphinx_rtd_theme", "sphinx-rtd-dark-mode", "sphinx_autodoc_typehints"]
+
+[project.urls]
+Homepage = "https://tendto.github.io/QCLight/"
+Source = "https://github.com/TendTo/QCLight"
+Tracker = "https://github.com/TendTo/QCLight/issues"
+
+[project.scripts]
+realpython = "qclight.__main__:main"

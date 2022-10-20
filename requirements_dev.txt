@@ -1,0 +1,10 @@
+black
+pytest
+bumpver
+pylint
+isort
+mypy
+sphinx
+sphinx_rtd_theme
+sphinx-rtd-dark-mode
+sphinx_autodoc_typehints
