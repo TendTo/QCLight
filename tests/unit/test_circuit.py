@@ -3,7 +3,13 @@
 import pytest
 import numpy as np
 from qclight.error import BinaryStringError, PowerOfTwoLengthError, PositiveValueError
-from qclight.circuit import QCLCircuit, SumCircuit, HalfAdderCircuit, BellCircuit
+from qclight.circuit import (
+    QCLCircuit,
+    SumCircuit,
+    HalfAdderCircuit,
+    BellCircuit,
+    RandomCircuit,
+)
 
 
 @pytest.fixture(scope="function")
@@ -198,3 +204,36 @@ class TestCircuit:
             bell.x(1)
             bell.correlate(0, 1)
             assert np.allclose(bell.run(), [0, 0.70710678, -0.70710678, 0])
+
+    class TestRandomCircuit:
+        """Test the RandomCircuit class."""
+
+        def test_run_one(self):
+            random_circuit = RandomCircuit(1)
+            random_circuit.run()
+            assert random_circuit.n == 1
+            assert np.allclose(random_circuit.run(), [0.70710678, 0.70710678])
+
+        def test_run_two(self):
+            random_circuit = RandomCircuit(2)
+            random_circuit.run()
+            assert random_circuit.n == 2
+            assert np.allclose(random_circuit.run(), [0.5, 0.5, 0.5, 0.5])
+
+        def test_run_three(self):
+            random_circuit = RandomCircuit(3)
+            random_circuit.run()
+            assert random_circuit.n == 3
+            assert np.allclose(
+                random_circuit.run(),
+                [
+                    0.35355339,
+                    0.35355339,
+                    0.35355339,
+                    0.35355339,
+                    0.35355339,
+                    0.35355339,
+                    0.35355339,
+                    0.35355339,
+                ],
+            )
