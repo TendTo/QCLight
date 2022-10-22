@@ -1,8 +1,9 @@
 # pylint: disable=missing-function-docstring,too-few-public-methods,redefined-outer-name
+"""Test circuit package."""
 import pytest
 import numpy as np
 from qclight.error import BinaryStringError, PowerOfTwoLengthError, PositiveValueError
-from qclight.circuit import QCLCircuit, SumCircuit
+from qclight.circuit import QCLCircuit, SumCircuit, HalfAdderCircuit
 
 
 @pytest.fixture(scope="function")
@@ -124,7 +125,29 @@ class TestCircuit:
             circuit.swap(0, 2)
             assert np.allclose(circuit.run(), [0, 1, 0, 0, 0, 0, 0, 0])
 
+    class TestHalfAdder:
+        """Tests the HalfAdderCircuit class."""
+
+        def test_constructor_zero_zero(self):
+            half_adder = HalfAdderCircuit(0, 0)
+            assert np.array_equal(half_adder.sum(), 0)
+
+        def test_constructor_one_zero(self):
+            half_adder = HalfAdderCircuit(1, 0)
+            assert np.array_equal(half_adder.sum(), 1)
+
+        def test_constructor_zero_one(self):
+            half_adder = HalfAdderCircuit(0, 1)
+            assert np.array_equal(half_adder.sum(), 1)
+
+        def test_constructor_one_one(self):
+            half_adder = HalfAdderCircuit(1, 1)
+            assert np.array_equal(half_adder.sum(), 0b10)
+
+    @pytest.mark.skip(reason="Not implemented yet")
     class TestSumCircuit:
+        """Test the SumCircuit class."""
+
         def test_constructor_same_length(self):
             a, b = 0b101, 0b110
             sum_c = SumCircuit(a, b)
