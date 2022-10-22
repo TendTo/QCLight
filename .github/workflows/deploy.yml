@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
 
+permissions:
+  id-token: write
+
 concurrency:
   group: "deploy"
   cancel-in-progress: true
