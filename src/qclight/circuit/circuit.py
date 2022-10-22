@@ -71,7 +71,8 @@ class QCLCircuit:
         The circuit is effectively reset, so no gates are applied.
 
         Args:
-            state: set the initial state of the circuit so that there is 100% probability of getting the provided state
+            state: set the initial state of the circuit so that
+            there is 100% probability of measuring the provided state
         """
         self.gates = []
         self._result = None
@@ -272,6 +273,32 @@ class QCLCircuit:
                 )
         self.gates.append(identity)
 
+    def or_(self, q1: "int", q2: "int", t: "int") -> "None":
+        """Applies an OR gate to the qubits in position q1 and q2.
+        The result will be stored in the qubit in position t.
+
+        | q1 | q2 | OR |
+        |:--:|:--:|:--:|
+        | 0  | 0  | 0  |
+        | 0  | 1  | 1  |
+        | 1  | 0  | 1  |
+        | 1  | 1  | 1  |
+
+        .. table:: Truth table of the OR gate.
+
+            ==== ==== ====
+             q1   q2   OR
+            ==== ==== ====
+             0    0    0
+             0    1    1
+             1    0    1
+             1    1    1
+            ==== ==== ====
+        """
+        self.cx(q1, t)
+        self.cx(q2, t)
+        self.ccx(q1, q2, t)
+
     def swap(self, i: "int", j: "int") -> "None":
         """Swaps the qubit in position i with the qubit in position j.
 
@@ -310,9 +337,7 @@ class QCLCircuit:
             if digit > 0:
                 print(f"{i:0{self.n}b} - {np.around(digit**2, decimals=2) * 100}%")
 
-    def measure(
-        self, auto_run: "bool" = True, interval: "tuple[int, int] | None" = None
-    ) -> "None":
+    def measure(self, auto_run: "bool" = True) -> "None":
         """Collapses the qubits and show their value as a classical bit.
         If auto_run is True, the circuit is run before showing the result.
         If an interval is provided, the result is shown only for the qubits in that range.
