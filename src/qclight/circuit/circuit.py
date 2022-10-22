@@ -1,3 +1,4 @@
+"""QCLCircuit class"""
 import re
 from typing import Any
 import numpy as np
@@ -10,36 +11,42 @@ FloatNDArray = np.ndarray[Any, np.dtype[np.float64]]
 class QCLCircuit:
     """Quantum circuit used for computation"""
 
-    def __init__(self, state: str | list[float] | int) -> None:
+    def __init__(self, state: "str | list[float] | int") -> "None":
         """QCLCircuit constructor.
 
         Args:
             state: initial state of the circuit
         """
-        self._state: FloatNDArray
-        self._n: int
-        self.gates: list[FloatNDArray]
-        self._result: FloatNDArray | None
+        self._state: "FloatNDArray"
+        self._n: "int"
+        self.gates: "list[FloatNDArray]"
+        self._result: "FloatNDArray | None"
+        self._identity: "FloatNDArray"
         self._initialize_state(state)
 
     @property
-    def n(self) -> int:
+    def n(self) -> "int":
         """Number of qubits in the circuit."""
         return self._n
 
+    @n.setter
+    def n(self, n: "int") -> "None":
+        self._n = n
+        self._identity = self.tp([Gate.I] * n)
+
     @property
-    def state(self) -> FloatNDArray:
+    def state(self) -> "FloatNDArray":
         """Initial state of the circuit."""
         return self._state
 
     @property
-    def result(self) -> FloatNDArray:
+    def result(self) -> "FloatNDArray":
         """Result of the last simulation
         or the initial state if no simulation has been run yet.
         """
-        return self._result or self._state
+        return self._result if self._result is not None else self._state
 
-    def __normalize(self, vector: FloatNDArray) -> FloatNDArray:
+    def __normalize(self, vector: "FloatNDArray") -> "FloatNDArray":
         """Normalize an array so that the sum of all the elements is 1.
 
         Args:
@@ -58,7 +65,7 @@ class QCLCircuit:
             return vector
         return vector / norm
 
-    def _initialize_state(self, state: str | list[float] | int) -> FloatNDArray:
+    def _initialize_state(self, state: "str | list[float] | int") -> "FloatNDArray":
         """Initializes the state of the circuit.
         The state is initialized so that the probability of measuring :param:`state` is 100%.
         The circuit is effectively reset, so no gates are applied.
@@ -71,8 +78,8 @@ class QCLCircuit:
         if isinstance(state, str):
             if re.match(r"^[01]+$", state) is None:
                 raise BinaryStringError(state)
-            self._n = len(state)
-            self._state = np.zeros(2**self._n)
+            self.n = len(state)
+            self._state = np.zeros(2**self.n)
             pos = int(state, 2)
             self._state[pos] = 1
         elif isinstance(state, list):
@@ -80,16 +87,16 @@ class QCLCircuit:
             if (length & (length - 1) != 0) or length == 0:
                 raise PowerOfTwoLengthError(length)
             self._state = self.__normalize(np.array(state))
-            self._n = length.bit_length() - 1
+            self.n = length.bit_length() - 1
         elif isinstance(state, int):
             if state <= 0:
                 raise PositiveValueError(state)
             self._state = np.zeros(2**state)
             self._state[0] = 1
-            self._n = state
+            self.n = state
         return self._state
 
-    def _initialize_circuit(self, state: str) -> None:
+    def _initialize_circuit(self, state: "str") -> "None":
         """Builds a circuit that output the provided state starting from the all-zero state.
 
         Args:
@@ -99,19 +106,19 @@ class QCLCircuit:
             raise ValueError("state must be a string that verifies the regex ^[01h]+$")
         self.gates = []
         self._result = None
-        self._state = np.zeros(2**self._n)
+        self._state = np.zeros(2**self.n)
         self._state[0] = 1
-        self._n = len(state)
+        self.n = len(state)
         xList = [i for i, digit in enumerate(state) if digit == "1"]
         hList = [i for i, digit in enumerate(state) if digit == "h"]
         self.x(xList)
         self.h(hList)
 
     def expand_gate(
-        self, single_gate: FloatNDArray, positions: int | list[int]
-    ) -> FloatNDArray:
-        """Expands a single gate so that all the qubits are included.
-        All the qubits in the positions specified by {@link positions} will be affected by the gate,
+        self, single_gate: "FloatNDArray", positions: "int | list[int]"
+    ) -> "FloatNDArray":
+        """Expands a single gate so that all the qubit are included.
+        All the qubit in the positions specified by {@link positions} will be affected by the gate,
         the others will be multiplied by the identity matrix.
 
         Args:
@@ -121,7 +128,7 @@ class QCLCircuit:
         Returns:
             expanded gate
         """
-        expanded_gate = [Gate.I] * self._n
+        expanded_gate = [Gate.I] * self.n
         if isinstance(positions, int):
             positions = [positions]
         if isinstance(positions, list):
@@ -129,7 +136,7 @@ class QCLCircuit:
                 expanded_gate[position] = single_gate
         return self.tp(expanded_gate)
 
-    def tp(self, gates: list[FloatNDArray]) -> FloatNDArray:
+    def tp(self, gates: "list[FloatNDArray]") -> "FloatNDArray":
         """Calculates the tensor product between all the gates in the list.
 
         Args:
@@ -148,15 +155,20 @@ class QCLCircuit:
             v = np.kron(v, gate)
         return v
 
-    def x(self, i: int | list[int]) -> None:
+    def x(self, i: "int | list[int]") -> "None":
         """Applies a :property:`Gate.X` gate to the qubit in position :param:`i`.
+
+        | i | X |
+        |---|---|
+        | 0 | 1 |
+        | 1 | 0 |
 
         Args:
             i: position of the qubit to be affected by the gate
         """
         self.gates.append(self.expand_gate(Gate.X, i))
 
-    def h(self, i: int | list[int]) -> None:
+    def h(self, i: "int | list[int]") -> "None":
         """Applies a :property:`Gate.H` gate to the qubit in position :param:`i`.
 
         Args:
@@ -164,7 +176,78 @@ class QCLCircuit:
         """
         self.gates.append(self.expand_gate(Gate.H, i))
 
-    def run(self) -> FloatNDArray | None:
+    def cx(self, c: "int", t: "int") -> "None":
+        """Applies a cx gate controlled by the qubit in position :param:`c`.
+        The qubit in position :param:`t` will be affected by the gate if the control qubit is 1.
+
+        | c | t | CX |
+        |---|---|----|
+        | 0 | 0 | 0  |
+        | 0 | 1 | 1  |
+        | 1 | 0 | 1  |
+        | 1 | 1 | 0  |
+
+        Args:
+            c: position of the qubit controlling the gate
+            t: position of the qubit to be affected by the gate
+        """
+        identity = self._identity.copy()
+        c_mask = 1 << self.n - c - 1
+        t_mask = 1 << self.n - t - 1
+        for i in range(self._state.size):
+            if i & c_mask and not i & t_mask:
+                swap_idx = i | t_mask
+                identity[i], identity[swap_idx] = (
+                    identity[swap_idx].copy(),
+                    identity[i].copy(),
+                )
+        self.gates.append(identity)
+
+    def ccx(self, c1: "int", c2: "int", t: "int") -> "None":
+        """Applies a ccx gate controlled by both qubit in position :param:`c1` and  :param:`c2`.
+        The qubit in position :param:`t` will be affected by the gate if both control qubit are 1.
+
+        | c1 | c1 | t | CX |
+        |----|----|---|----|
+        | 0  | 0  | 0 | 0  |
+        | 0  | 1  | 0 | 0  |
+        | 1  | 0  | 0 | 0  |
+        | 1  | 1  | 0 | 1  |
+        | 0  | 0  | 1 | 1  |
+        | 0  | 1  | 1 | 1  |
+        | 1  | 0  | 1 | 1  |
+        | 1  | 1  | 1 | 0  |
+
+        Args:
+            c1: position of the first qubit controlling the gate
+            c2: position of the second qubit controlling the gate
+            t: position of the qubit to be affected by the gate
+        """
+        identity = self._identity.copy()
+        c1_mask = 1 << self.n - c1 - 1
+        c2_mask = 1 << self.n - c2 - 1
+        t_mask = 1 << self.n - t - 1
+        for i in range(self._state.size):
+            if i & c1_mask and i & c2_mask and not i & t_mask:
+                swap_idx = i | t_mask
+                identity[i], identity[swap_idx] = (
+                    identity[swap_idx].copy(),
+                    identity[i].copy(),
+                )
+        self.gates.append(identity)
+
+    def swap(self, i: "int", j: "int") -> "None":
+        """Swaps the qubit in position :param:`i` with the qubit in position :param:`j`.
+
+        Args:
+            i: position of the first qubit to be swapped
+            j: position of the second qubit to be swapped
+        """
+        self.cx(i, j)
+        self.cx(j, i)
+        self.cx(i, j)
+
+    def run(self) -> "FloatNDArray":
         """Runs the simulator and returns the result.
 
         Returns:
@@ -174,9 +257,9 @@ class QCLCircuit:
         for gate in self.gates:
             result = np.matmul(result, gate)
         self._result = result
-        return self._result
+        return self.result
 
-    def print_results(self, auto_run: bool = True):
+    def print_results(self, auto_run: "bool" = True) -> "None":
         """Shows the result of the computation and the probability for each to happen.
         If auto_run is True, the circuit is run before showing the result.
 
@@ -187,26 +270,20 @@ class QCLCircuit:
             self.run()
 
         print("RESULTS:")
-        format_str = f"{{:0>{self._n}b}}"
         for i, digit in enumerate(self.result):
             if digit > 0:
-                print(
-                    f"{format_str.format(i)} - {np.around(digit**2, decimals=2) * 100}%"
-                )
+                print(f"{i:0{self.n}b} - {np.around(digit**2, decimals=2) * 100}%")
 
     def measure(
-        self, auto_run: bool = True, range: tuple[int, int] | None = None
-    ) -> None:
-        """Collapses the qubits and show their value as a classical bit.
+        self, auto_run: "bool" = True, range: "tuple[int, int] | None" = None
+    ) -> "None":
+        """Collapses the qubit and show their value as a classical bit.
         If auto_run is True, the circuit is run before showing the result.
-        If a range is provided, the result is shown only for the qubits in that range.
+        If a range is provided, the result is shown only for the qubit in that range.
 
         Args:
             auto_run: whether to run the circuit before showing the result
-            range: range of qubits to measure and show
+            range: range of qubit to measure and show
         """
         if auto_run:
             self.run()
-
-    def __repr__(self) -> str:
-        return "QCLCircuit"
