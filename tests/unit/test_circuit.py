@@ -131,6 +131,26 @@ class TestCircuit:
             circuit.swap(0, 2)
             assert np.allclose(circuit.run(), [0, 1, 0, 0, 0, 0, 0, 0])
 
+        def test_or_gate_zero_zero(self, circuit: QCLCircuit):
+            circuit.or_(0, 1, 2)
+            assert np.allclose(circuit.run(), [1, 0, 0, 0, 0, 0, 0, 0])
+
+        def test_or_gate_one_zero(self, circuit: QCLCircuit):
+            circuit.x(0)
+            circuit.or_(0, 1, 2)
+            assert np.allclose(circuit.run(), [0, 0, 0, 0, 0, 1, 0, 0])
+
+        def test_or_gate_zero_one(self, circuit: QCLCircuit):
+            circuit.x(1)
+            circuit.or_(0, 1, 2)
+            assert np.allclose(circuit.run(), [0, 0, 0, 1, 0, 0, 0, 0])
+
+        def test_or_gate_one_one(self, circuit: QCLCircuit):
+            circuit.x(0)
+            circuit.x(1)
+            circuit.or_(0, 1, 2)
+            assert np.allclose(circuit.run(), [0, 0, 0, 0, 0, 0, 0, 1])
+
     class TestHalfAdder:
         """Tests the HalfAdderCircuit class."""
 
