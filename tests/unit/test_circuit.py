@@ -3,7 +3,7 @@
 import pytest
 import numpy as np
 from qclight.error import BinaryStringError, PowerOfTwoLengthError, PositiveValueError
-from qclight.circuit import QCLCircuit, SumCircuit, HalfAdderCircuit
+from qclight.circuit import QCLCircuit, SumCircuit, HalfAdderCircuit, BellCircuit
 
 
 @pytest.fixture(scope="function")
@@ -171,3 +171,30 @@ class TestCircuit:
                 for b in range(10):
                     sum_c = SumCircuit(a, b)
                     assert sum_c.sum() == a + b
+
+    class TestBellCircuit:
+        """Test the BellCircuit class."""
+
+        def test_correlation_zero_zero(self):
+            bell = BellCircuit(2)
+            bell.correlate(0, 1)
+            assert np.allclose(bell.run(), [0.70710678, 0, 0, 0.70710678])
+
+        def test_correlation_one_zero(self):
+            bell = BellCircuit(2)
+            bell.x(0)
+            bell.correlate(0, 1)
+            assert np.allclose(bell.run(), [0.70710678, 0, 0, -0.70710678])
+
+        def test_correlation_zero_one(self):
+            bell = BellCircuit(2)
+            bell.x(1)
+            bell.correlate(0, 1)
+            assert np.allclose(bell.run(), [0, 0.70710678, 0.70710678, 0])
+
+        def test_correlation_one_one(self):
+            bell = BellCircuit(2)
+            bell.x(0)
+            bell.x(1)
+            bell.correlate(0, 1)
+            assert np.allclose(bell.run(), [0, 0.70710678, -0.70710678, 0])
