@@ -63,6 +63,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          skip_existing: true
 
   docs:
     needs: [publish]
