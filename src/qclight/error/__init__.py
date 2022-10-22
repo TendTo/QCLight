@@ -1,5 +1,9 @@
-"""Error package.
-All the errors that can arise in the simulator.
+"""Many of the functions in ths library apply some kind of validation
+on the input parameters. 
+If the inputs are not valid, they may raise an exception.
+
+To make as clear as possible what went wrong, this package includes
+a number of custom exceptions that try to be as explicit as possible.
 """
 
 

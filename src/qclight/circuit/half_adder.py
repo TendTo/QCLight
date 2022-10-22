@@ -14,6 +14,17 @@ class HalfAdderCircuit(QCLCircuit):
     | 0 | 1 |  1  |   0   |
     | 1 | 0 |  1  |   0   |
     | 1 | 1 |  0  |   1   |
+
+    .. table:: Truth table of the half adder circuit.
+
+        === === ===== =======
+         a   b   sum   carry
+        === === ===== =======
+         0   0    0      0
+         0   1    1      0
+         1   0    1      0
+         1   1    0      1
+        === === ===== =======
     """
 
     def __init__(self, a: int, b: int) -> None:

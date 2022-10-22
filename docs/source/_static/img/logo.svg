@@ -1,0 +1,23 @@
+<svg id="visual" viewBox="0 0 900 900" width="900" height="900" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+    <rect x="0" y="0" width="900" height="900" fill="#002233"></rect>
+    <polygon points="900,-550 0,900 900,900" fill="rgba(255,255,0,0.521)" />
+    <text x="450" y="450" text-anchor="middle" font-size="12rem" fill="white">QCLight</text>
+    <path fill="#004c72" stroke-linecap="round" stroke-linejoin="miter" d="
+        M0 695
+        C21.3 668 42.7 641 64.2 640.2
+        C85.7 639.3 107.3 664.7 128.8 668.7
+        C150.3 672.7 171.7 655.3 193 642.8
+        C214.3 630.3 235.7 622.7 257 633.3
+        C278.3 644 299.7 673 321.2 681.5
+        C342.7 690 364.3 678 385.8 664
+        C407.3 650 428.7 634 450 632.5
+        C471.3 631 492.7 644 514.2 653.8
+        C535.7 663.7 557.3 670.3 578.8 653.3
+        C664.3 603 685.7 651 707 675.2
+        C728.3 699.3 749.7 699.7 771.2 676.2
+        C857.3 579 878.7 600 900 621
+        L900 900
+        L0 900
+        Z"></path>
+</svg>

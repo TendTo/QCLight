@@ -67,7 +67,7 @@ class QCLCircuit:
 
     def _initialize_state(self, state: "str | list[float] | int") -> "FloatNDArray":
         """Initializes the state of the circuit.
-        The state is initialized so that the probability of measuring :param:`state` is 100%.
+        The state is initialized so that the probability of measuring state is 100%.
         The circuit is effectively reset, so no gates are applied.
 
         Args:
@@ -110,17 +110,17 @@ class QCLCircuit:
         self._result = None
         self._state = np.zeros(2**self.n)
         self._state[0] = 1
-        xList = [i for i, digit in enumerate(state) if digit == "1"]
-        hList = [i for i, digit in enumerate(state) if digit == "h"]
-        self.x(xList)
-        self.h(hList)
+        x_list = [i for i, digit in enumerate(state) if digit == "1"]
+        h_list = [i for i, digit in enumerate(state) if digit == "h"]
+        self.x(x_list)
+        self.h(h_list)
 
     def expand_gate(
         self, single_gate: "FloatNDArray", positions: "int | list[int]"
     ) -> "FloatNDArray":
-        """Expands a single gate so that all the qubit are included.
-        All the qubit in the positions specified by {@link positions} will be affected by the gate,
-        the others will be multiplied by the identity matrix.
+        """Expands a single gate so that all the qubits are included.
+        All the qubits in the positions specified by position will be affected by the gate,
+        while the others will be multiplied by the identity matrix.
 
         Args:
             single_gate: gate to be expanded
@@ -157,12 +157,21 @@ class QCLCircuit:
         return v
 
     def x(self, i: "int | list[int]") -> "None":
-        """Applies a :property:`Gate.X` gate to the qubit in position :param:`i`.
+        """Applies a :attr:`~qclight.gates.gates.Gate.X` gate to the qubit in position i.
 
         | i | X |
-        |:-:|:-:|
+        |---|---|
         | 0 | 1 |
         | 1 | 0 |
+
+        .. table:: Truth table of the X gate.
+
+            === ===
+             i   X
+            === ===
+             0   1
+             1   0
+            === ===
 
         Args:
             i: position of the qubit to be affected by the gate
@@ -170,7 +179,7 @@ class QCLCircuit:
         self.gates.append(self.expand_gate(Gate.X, i))
 
     def h(self, i: "int | list[int]") -> "None":
-        """Applies a :property:`Gate.H` gate to the qubit in position :param:`i`.
+        """Applies a :attr:`~qclight.gates.gates.Gate.H` gate to the qubit in position i.
 
         Args:
             i: position of the qubit to be affected by the gate
@@ -178,8 +187,8 @@ class QCLCircuit:
         self.gates.append(self.expand_gate(Gate.H, i))
 
     def cx(self, c: "int", t: "int") -> "None":
-        """Applies a cx gate controlled by the qubit in position :param:`c`.
-        The qubit in position :param:`t` will be affected by the gate if the control qubit is 1.
+        """Applies a cx gate controlled by the qubit in position c.
+        The qubit in position t will be negated if the control qubit is 1.
 
         | c | t | CX |
         |:-:|:-:|:--:|
@@ -187,6 +196,17 @@ class QCLCircuit:
         | 0 | 1 | 1  |
         | 1 | 0 | 1  |
         | 1 | 1 | 0  |
+
+        .. table:: Truth table of the CX gate.
+
+            === === ====
+             c   t   CX
+            === === ====
+             0   0   0
+             0   1   1
+             1   0   1
+             1   1   0
+            === === ====
 
         Args:
             c: position of the qubit controlling the gate
@@ -205,8 +225,8 @@ class QCLCircuit:
         self.gates.append(identity)
 
     def ccx(self, c1: "int", c2: "int", t: "int") -> "None":
-        """Applies a ccx gate controlled by both qubit in position :param:`c1` and  :param:`c2`.
-        The qubit in position :param:`t` will be affected by the gate if both control qubit are 1.
+        """Applies a ccx gate controlled by both qubits in position c1 and c2.
+        The qubit in position t will be negated if both control qubits are 1.
 
         | c1 | c1 | t | CCX |
         |:--:|:--:|:-:|:---:|
@@ -218,6 +238,21 @@ class QCLCircuit:
         | 0  | 1  | 1 |  1  |
         | 1  | 0  | 1 |  1  |
         | 1  | 1  | 1 |  0  |
+
+        .. table:: Truth table of the CCX gate.
+
+            ==== ==== ==== ====
+             c1   c2   t   CCX
+            ==== ==== ==== ====
+             0    0    0    0
+             0    1    0    0
+             1    0    0    0
+             1    1    0    1
+             0    0    1    1
+             0    1    1    1
+             1    0    1    1
+             1    1    1    0
+            ==== ==== ==== ====
 
         Args:
             c1: position of the first qubit controlling the gate
@@ -238,7 +273,7 @@ class QCLCircuit:
         self.gates.append(identity)
 
     def swap(self, i: "int", j: "int") -> "None":
-        """Swaps the qubit in position :param:`i` with the qubit in position :param:`j`.
+        """Swaps the qubit in position i with the qubit in position j.
 
         Args:
             i: position of the first qubit to be swapped
@@ -276,15 +311,15 @@ class QCLCircuit:
                 print(f"{i:0{self.n}b} - {np.around(digit**2, decimals=2) * 100}%")
 
     def measure(
-        self, auto_run: "bool" = True, range: "tuple[int, int] | None" = None
+        self, auto_run: "bool" = True, interval: "tuple[int, int] | None" = None
     ) -> "None":
-        """Collapses the qubit and show their value as a classical bit.
+        """Collapses the qubits and show their value as a classical bit.
         If auto_run is True, the circuit is run before showing the result.
-        If a range is provided, the result is shown only for the qubit in that range.
+        If an interval is provided, the result is shown only for the qubits in that range.
 
         Args:
             auto_run: whether to run the circuit before showing the result
-            range: range of qubit to measure and show
+            interval: range of qubits to measure and show
         """
         if auto_run:
             self.run()
