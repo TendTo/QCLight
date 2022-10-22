@@ -1,7 +1,7 @@
 """Gate class"""
 import numpy as np
 
-
+# pylint: disable=too-few-public-methods
 class Gate:
     """Gates are the basic building blocks of quantum circuits.
     They are used to manipulate the state of a quantum system and compute functions.
