@@ -24,7 +24,7 @@ keywords = ["quantum", "quantum computing", "numpy", "algebra", "qubit"]
 dependencies = [
     "numpy<=1.23.4"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 
 [project.optional-dependencies]
 style = ["black", "bumpver", "pylint", "isort", "mypy"]
