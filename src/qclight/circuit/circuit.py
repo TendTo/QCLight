@@ -9,7 +9,7 @@ FloatNDArray = np.ndarray[Any, np.dtype[np.float64]]
 
 
 class QCLCircuit:
-    """Quantum circuit used for computation"""
+    """Quantum circuit used for a generic computation"""
 
     def __init__(self, state: "str | list[float] | int") -> "None":
         """QCLCircuit constructor.
@@ -104,11 +104,12 @@ class QCLCircuit:
         """
         if not isinstance(state, str) or re.match(r"^[01h]+$", state) is None:
             raise ValueError("state must be a string that verifies the regex ^[01h]+$")
+        if len(state) != self.n:
+            raise ValueError("state must be a string of length n")
         self.gates = []
         self._result = None
         self._state = np.zeros(2**self.n)
         self._state[0] = 1
-        self.n = len(state)
         xList = [i for i, digit in enumerate(state) if digit == "1"]
         hList = [i for i, digit in enumerate(state) if digit == "h"]
         self.x(xList)
@@ -159,7 +160,7 @@ class QCLCircuit:
         """Applies a :property:`Gate.X` gate to the qubit in position :param:`i`.
 
         | i | X |
-        |---|---|
+        |:-:|:-:|
         | 0 | 1 |
         | 1 | 0 |
 
@@ -181,7 +182,7 @@ class QCLCircuit:
         The qubit in position :param:`t` will be affected by the gate if the control qubit is 1.
 
         | c | t | CX |
-        |---|---|----|
+        |:-:|:-:|:--:|
         | 0 | 0 | 0  |
         | 0 | 1 | 1  |
         | 1 | 0 | 1  |
@@ -207,16 +208,16 @@ class QCLCircuit:
         """Applies a ccx gate controlled by both qubit in position :param:`c1` and  :param:`c2`.
         The qubit in position :param:`t` will be affected by the gate if both control qubit are 1.
 
-        | c1 | c1 | t | CX |
-        |----|----|---|----|
-        | 0  | 0  | 0 | 0  |
-        | 0  | 1  | 0 | 0  |
-        | 1  | 0  | 0 | 0  |
-        | 1  | 1  | 0 | 1  |
-        | 0  | 0  | 1 | 1  |
-        | 0  | 1  | 1 | 1  |
-        | 1  | 0  | 1 | 1  |
-        | 1  | 1  | 1 | 0  |
+        | c1 | c1 | t | CCX |
+        |:--:|:--:|:-:|:---:|
+        | 0  | 0  | 0 |  0  |
+        | 0  | 1  | 0 |  0  |
+        | 1  | 0  | 0 |  0  |
+        | 1  | 1  | 0 |  1  |
+        | 0  | 0  | 1 |  1  |
+        | 0  | 1  | 1 |  1  |
+        | 1  | 0  | 1 |  1  |
+        | 1  | 1  | 1 |  0  |
 
         Args:
             c1: position of the first qubit controlling the gate
