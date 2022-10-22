@@ -9,6 +9,7 @@ from qclight.circuit import (
     HalfAdderCircuit,
     BellCircuit,
     RandomCircuit,
+    BooleanInnerProductCircuit,
 )
 
 
@@ -172,7 +173,7 @@ class TestCircuit:
 
     @pytest.mark.skip(reason="Not implemented yet")
     class TestSumCircuit:
-        """Test the SumCircuit class."""
+        """Tests the SumCircuit class."""
 
         def test_constructor_same_length(self):
             a, b = 0b101, 0b110
@@ -199,7 +200,7 @@ class TestCircuit:
                     assert sum_c.sum() == a + b
 
     class TestBellCircuit:
-        """Test the BellCircuit class."""
+        """Tests the BellCircuit class."""
 
         def test_correlation_zero_zero(self):
             bell = BellCircuit(2)
@@ -226,7 +227,7 @@ class TestCircuit:
             assert np.allclose(bell.run(), [0, 0.70710678, -0.70710678, 0])
 
     class TestRandomCircuit:
-        """Test the RandomCircuit class."""
+        """Tests the RandomCircuit class."""
 
         def test_run_one(self):
             random_circuit = RandomCircuit(1)
@@ -257,3 +258,30 @@ class TestCircuit:
                     0.35355339,
                 ],
             )
+
+    class TestBooleanInnerProductCircuit:
+        """Tests the BooleanInnerProductCircuit class."""
+
+        def test_product_same_length_true(self):
+            a = 0b101
+            b = 0b110
+            inner_product = BooleanInnerProductCircuit(a, b)
+            assert inner_product.inner_product() is True
+
+        def test_product_same_length_false(self):
+            a = 0b101
+            b = 0b111
+            inner_product = BooleanInnerProductCircuit(a, b)
+            assert inner_product.inner_product() is False
+
+        def test_product_different_length_true(self):
+            a = 0b1101
+            b = 0b110
+            inner_product = BooleanInnerProductCircuit(a, b)
+            assert inner_product.inner_product() is True
+
+        def test_product_different_length_false(self):
+            a = 0b101
+            b = 0b1111
+            inner_product = BooleanInnerProductCircuit(a, b)
+            assert inner_product.inner_product() is False
