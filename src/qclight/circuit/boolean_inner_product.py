@@ -20,8 +20,6 @@ class BooleanInnerProductCircuit(QCLCircuit):
     """
 
     def __init__(self, a: "int", b: "int") -> "None":
-        self.a = a
-        self.b = b
         if a < 0 or b < 0:
             raise PositiveValueError(a if a < 0 else b)
         a_len = a.bit_length() if a > 0 else 1
