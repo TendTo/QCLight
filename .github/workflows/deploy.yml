@@ -30,6 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
+          pip install .
 
       - name: Lint with pylint
         run: pylint --rcfile=.pylintrc ./src/qclight
@@ -76,6 +77,7 @@ jobs:
           pip install sphinx sphinx_rtd_theme sphinx-rtd-dark-mode sphinx_autodoc_typehints
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
+          pip install .
 
       - name: Sphinx build
         run: |
