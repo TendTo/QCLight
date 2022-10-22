@@ -4,7 +4,7 @@ The only dependency is NumPy, since the circuit and the operations are expressed
 as vectors and matrices, and NumPy allows to improve the performance of this kind of operations.
 
 QCLight is theoretically able to simulate quantum circuits with up to any number of qubits,
-but keep in mind that the operations scale exponentially with the number of qubits involved. 
+but keep in mind that the operations scale exponentially with the number of qubits involved.
 """
 
 from importlib import resources
