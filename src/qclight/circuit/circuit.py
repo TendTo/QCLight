@@ -2,6 +2,7 @@
 import re
 from typing import Any
 import numpy as np
+from qclight.utils import extract_bits
 from qclight.gates import Gate
 from qclight.error import BinaryStringError, PositiveValueError, PowerOfTwoLengthError
 
@@ -106,7 +107,7 @@ class QCLCircuit:
         if not isinstance(state, str) or re.match(r"^[01h]+$", state) is None:
             raise ValueError("state must be a string that verifies the regex ^[01h]+$")
         if len(state) != self.n:
-            raise ValueError("state must be a string of length n")
+            raise ValueError(f"state must be a string of length n={self.n}")
         self.gates = []
         self._result = None
         self._state = np.zeros(2**self.n)
@@ -322,29 +323,53 @@ class QCLCircuit:
         self._result = result
         return self.result
 
-    def print_results(self, auto_run: "bool" = True) -> "None":
+    def counts(
+        self, auto_run: "bool" = True, msr_list: "list[int] | None" = None
+    ) -> "None":
         """Shows the result of the computation and the probability for each to happen.
         If auto_run is True, the circuit is run before showing the result.
+        If an msr_list is provided, the result is shown only for the qubits with that index.
 
         Args:
             auto_run: whether to run the circuit before showing the result
+            msr_list: list of indices of the qubits to be considered
         """
         if auto_run:
             self.run()
 
         print("RESULTS:")
-        for i, digit in enumerate(self.result):
-            if digit > 0:
-                print(f"{i:0{self.n}b} - {np.around(digit**2, decimals=2) * 100}%")
+        # Show the results for all qubits
+        if msr_list is None or len(msr_list) == 0:
+            for i, digit in enumerate(self.result):
+                if digit > 0:
+                    print(f"{i:0{self.n}b} - {np.square(digit) * 100:.2f}%")
+            return
 
-    def measure(self, auto_run: "bool" = True) -> "None":
+        # Show the results only considering the state of the qubits in msr_list
+        msr: dict[int, np.float16] = {}
+        for i, digit in enumerate(self.result):
+            idx = extract_bits(i, msr_list)
+            prb = np.square(digit)
+            if idx in msr:
+                msr[idx] += prb
+            else:
+                msr[idx] = prb
+        for i, prb in msr.items():
+            if prb > 0:
+                print(f"{i:0{len(msr_list)}b} - {prb:.2f}%")
+
+    def measure(
+        self, auto_run: "bool" = True, msr_list: "list[int] | None" = None
+    ) -> "None":
         """Collapses the qubits and show their value as a classical bit.
         If auto_run is True, the circuit is run before showing the result.
-        If an interval is provided, the result is shown only for the qubits in that range.
+        If an msr_list is provided, the result is shown only for the qubits with that index.
 
         Args:
             auto_run: whether to run the circuit before showing the result
-            interval: range of qubits to measure and show
+            msr_list: list of indices of the qubits to be measured
         """
+        if msr_list is None:
+            msr_list = list(range(self.n))
         if auto_run:
             self.run()
