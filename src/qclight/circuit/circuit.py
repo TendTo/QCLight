@@ -1,6 +1,6 @@
 """QCLCircuit class"""
 import re
-from typing import Any
+from typing import Any, Iterable
 import numpy as np
 from qclight.utils import extract_bits
 from qclight.gates import Gate
@@ -230,7 +230,7 @@ class QCLCircuit:
         """Applies a ccx gate controlled by both qubits in position c1 and c2.
         The qubit in position t will be negated if both control qubits are 1.
 
-        | c1 | c1 | t | CCX |
+        | c1 | c2 | t | CCX |
         |:--:|:--:|:-:|:---:|
         | 0  | 0  | 0 |  0  |
         | 0  | 1  | 0 |  0  |
@@ -267,6 +267,33 @@ class QCLCircuit:
         t_mask = 1 << self.n - t - 1
         for i in range(self._state.size):
             if i & c1_mask and i & c2_mask and not i & t_mask:
+                swap_idx = i | t_mask
+                identity[i], identity[swap_idx] = (
+                    identity[swap_idx].copy(),
+                    identity[i].copy(),
+                )
+        self.gates.append(identity)
+
+    def mcx(self, c_bits: "Iterable[int]", t: "int") -> "None":
+        """Applies a mcx gate controlled by all the qubits in position c_bits.
+        The qubit in position t will be negated if all control qubits are 1.
+
+        .. math::
+
+            mcx(c_1, c_2, ..., c_n, t) = \\begin{cases}
+                \\lnot t & \\text{if } c_1 \\land c_2 \\land \\dots \\land c_n \\\\
+                t & \\text{otherwise} \\\\
+            \\end{cases}
+
+        Args:
+            c_bits: positions of the qubits controlling the gate
+            t: position of the qubit to be affected by the gate
+        """
+        identity = self._identity.copy()
+        c_mask = sum(1 << self.n - bit - 1 for bit in c_bits)
+        t_mask = 1 << self.n - t - 1
+        for i in range(self._state.size):
+            if i & c_mask == c_mask and not i & t_mask:
                 swap_idx = i | t_mask
                 identity[i], identity[swap_idx] = (
                     identity[swap_idx].copy(),
