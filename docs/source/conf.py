@@ -43,11 +43,11 @@ exclude_patterns: "list[str]" = []
 
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
+html_favicon = '_static/img/logo.svg'
+html_logo = "_static/img/logo.svg"
 html_css_files = [
     "css/dark.css",
 ]
-
-html_logo = "_static/img/logo.svg"
 
 # -- Extension configuration -------------------------------------------------
 
