@@ -1,17 +1,15 @@
 """Main"""
-import sys
-# from qclight.circuit import SumCircuit
+from qclight.circuit import QCLVisualCircuit
 
 
 def main():
     """Simple main function"""
-    # sum = SumCircuit(0b101, 0b110)
-    # print(sum.gates)
-    sum.print_results()
-    if len(sys.argv) > 1:
-        print(f"Args: {sys.argv[1:]}")
-    else:
-        print("No args")
+    circuit = QCLVisualCircuit(4)
+    circuit.h(0)
+    circuit.cx(0, 3)
+    circuit.barrier()
+    circuit.x(2)
+    print(circuit)
 
 
 if __name__ == "__main__":
