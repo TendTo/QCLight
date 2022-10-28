@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qclight"
-dynamic = ['version']
+version = "0.0.2"
 description = "A lightweught quantum computing simulator"
 readme = "README.md"
 authors = [{ name = "TendTo", email = "casablancaernesto@gmail.com" }]
@@ -32,7 +32,7 @@ test = ["pytest"]
 docs = ["sphinx", "sphinx_rtd_theme", "sphinx-rtd-dark-mode", "sphinx_autodoc_typehints"]
 
 [project.urls]
-Homepage = "https://tendto.github.io/QCLight/"
+Homepage = "https://tendto.github.io/QCLight/docs"
 Source = "https://github.com/TendTo/QCLight"
 Tracker = "https://github.com/TendTo/QCLight/issues"
 
