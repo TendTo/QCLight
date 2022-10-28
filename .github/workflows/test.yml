@@ -3,9 +3,16 @@ name: Test CI
 on:
   push:
     branches: [staging]
+    paths-ignore:
+      - ".gitignore"
+      - "README.md"
+      - "docs/**"
   pull_request:
     branches: [staging]
-
+    paths-ignore:
+      - ".gitignore"
+      - "README.md"
+      - "docs/**"
 jobs:
   test:
     strategy:
