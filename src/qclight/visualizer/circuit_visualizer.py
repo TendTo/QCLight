@@ -1,5 +1,5 @@
 """CircuitVisualizer class"""
-from typing import Iterable
+from typing import Iterable  # pylint: disable=unused-import
 import numpy as np
 import numpy.typing as npt
 from qclight.gate import Gate
@@ -14,6 +14,31 @@ class CircuitVisualizer:
         self._qubits: "list[list[Connector]]" = []
         for i in range(n_qubits):
             self._qubits.append([Connector.qubit(i)])
+
+    def _first_available_position(self, qubits: "int | Iterable[int]") -> "int":
+        """Calculates the first available position for the provided qubits.
+        It shows the last position from the end where all the qubits specified are empty.
+        It stops as soon as it finds a qubit among the ones indicated that is not empty.
+        If no valid position was found, it returns -1.
+
+        Args:
+            qubits: qubits that must be empty
+
+        Returns:
+            last position from the end where all the qubits specified are empty or -1
+        """
+        if isinstance(qubits, int):
+            qubits = [qubits]
+        min_idx = []
+        for i in range(len(self._qubits[0]) - 1, -1, -1):
+            for qubit in qubits:
+                if not self._qubits[qubit][i].is_empty():
+                    break
+            else:
+                min_idx.append(i)
+                continue
+            break
+        return min(min_idx) if len(min_idx) > 0 else -1
 
     def append_standalone(self, gate: "Gate", qubits: "int | Iterable[int]"):
         """Appends a standalone gate to the provided qubit in the first available position.
@@ -100,31 +125,6 @@ class CircuitVisualizer:
         self._qubits = []
         for i, qubit in enumerate(state_str):
             self._qubits.append([Connector.qubit(i, initial_state=qubit)])
-
-    def _first_available_position(self, qubits: "int | Iterable[int]") -> "int":
-        """Calculates the first available position for the provided qubits.
-        It shows the last position from the end where all the qubits specified are empty.
-        It stops as soon as it finds a qubit among the ones indicated that is not empty.
-        If no valid position was found, it returns -1.
-
-        Args:
-            qubits: qubits that must be empty
-
-        Returns:
-            last position from the end where all the qubits specified are empty or -1
-        """
-        if isinstance(qubits, int):
-            qubits = [qubits]
-        min_idx = []
-        for i in range(len(self._qubits[0]) - 1, -1, -1):
-            for qubit in qubits:
-                if not self._qubits[qubit][i].is_empty():
-                    break
-            else:
-                min_idx.append(i)
-                continue
-            break
-        return min(min_idx) if len(min_idx) > 0 else -1
 
     def __str__(self):
         return "\n".join(["".join([str(c) for c in q]) for q in self._qubits])
