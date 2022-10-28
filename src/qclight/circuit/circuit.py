@@ -2,7 +2,7 @@
 import re
 from typing import Any, Iterable
 import numpy as np
-from qclight.utils import extract_bits
+from qclight.utils import extract_bits, range_fixed_bits_switch
 from qclight.gates import Gate
 from qclight.error import BinaryStringError, PositiveValueError, PowerOfTwoLengthError
 
@@ -214,17 +214,7 @@ class QCLCircuit:
             c: position of the qubit controlling the gate
             t: position of the qubit to be affected by the gate
         """
-        identity = self._identity.copy()
-        c_mask = 1 << self.n - c - 1
-        t_mask = 1 << self.n - t - 1
-        for i in range(self._state.size):
-            if i & c_mask and not i & t_mask:
-                swap_idx = i | t_mask
-                identity[i], identity[swap_idx] = (
-                    identity[swap_idx].copy(),
-                    identity[i].copy(),
-                )
-        self.gates.append(identity)
+        self.mcx((c,), t)
 
     def ccx(self, c1: "int", c2: "int", t: "int") -> "None":
         """Applies a ccx gate controlled by both qubits in position c1 and c2.
@@ -261,18 +251,7 @@ class QCLCircuit:
             c2: position of the second qubit controlling the gate
             t: position of the qubit to be affected by the gate
         """
-        identity = self._identity.copy()
-        c1_mask = 1 << self.n - c1 - 1
-        c2_mask = 1 << self.n - c2 - 1
-        t_mask = 1 << self.n - t - 1
-        for i in range(self._state.size):
-            if i & c1_mask and i & c2_mask and not i & t_mask:
-                swap_idx = i | t_mask
-                identity[i], identity[swap_idx] = (
-                    identity[swap_idx].copy(),
-                    identity[i].copy(),
-                )
-        self.gates.append(identity)
+        self.mcx((c1, c2), t)
 
     def mcx(self, c_bits: "Iterable[int]", t: "int") -> "None":
         """Applies a mcx gate controlled by all the qubits in position c_bits.
@@ -290,15 +269,11 @@ class QCLCircuit:
             t: position of the qubit to be affected by the gate
         """
         identity = self._identity.copy()
-        c_mask = sum(1 << self.n - bit - 1 for bit in c_bits)
-        t_mask = 1 << self.n - t - 1
-        for i in range(self._state.size):
-            if i & c_mask == c_mask and not i & t_mask:
-                swap_idx = i | t_mask
-                identity[i], identity[swap_idx] = (
-                    identity[swap_idx].copy(),
-                    identity[i].copy(),
-                )
+        for idx, swap_idx in range_fixed_bits_switch(self.n, set(c_bits), t):
+            identity[idx], identity[swap_idx] = (
+                identity[swap_idx].copy(),
+                identity[idx].copy(),
+            )
         self.gates.append(identity)
 
     def or_(self, q1: "int", q2: "int", t: "int") -> "None":
