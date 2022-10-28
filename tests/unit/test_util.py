@@ -1,5 +1,5 @@
 # pylint: disable=missing-function-docstring,too-few-public-methods,redefined-outer-name
-"""Test circuit package."""
+"""Test util package."""
 import pytest
 from qclight.utils import (
     BinaryStringError,

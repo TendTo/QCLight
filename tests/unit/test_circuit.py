@@ -67,15 +67,6 @@ class TestCircuit:
             with pytest.raises(PositiveValueError, match=r"received '0'"):
                 QCLCircuit(0)
 
-        def test_tp(self, circuit: QCLCircuit):
-            gates = [np.array([[0, 1], [1, 0]])] * 2
-            tp_gates = circuit.tp(gates)
-            assert tp_gates.shape == (4, 4)
-            assert np.array_equal(
-                tp_gates,
-                np.array([[0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0], [1, 0, 0, 0]]),
-            )
-
         def test_x_gate_int(self, circuit: QCLCircuit):
             circuit.x(1)
             assert np.array_equal(circuit.run(), [0, 0, 1, 0, 0, 0, 0, 0])
