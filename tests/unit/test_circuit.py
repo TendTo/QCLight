@@ -283,6 +283,17 @@ class TestCircuit:
             assert circuit.n == 3
             assert circuit._visualizer is not None
 
+        def test_set_n(self):
+            circuit = QCLVisualCircuit(3)
+            assert circuit.n == 3
+            assert circuit._visualizer._n == 3
+            assert len(circuit._visualizer._qubits) == 3
+            circuit.n = 5
+            assert circuit.n == 5
+            assert circuit._visualizer._n == 5
+            assert len(circuit._visualizer._qubits) == 5
+
+
         def test_x_gate_single(self, visual_circuit: QCLVisualCircuit):
             visual_circuit.x(0)
             visual_circuit._visualizer.append_standalone.assert_called_once_with(
