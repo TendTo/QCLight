@@ -18,5 +18,5 @@ Subpackages
    qclight.circuit
    qclight.error
    qclight.gate
+   qclight.visualizer
    qclight.utils
-

@@ -1,4 +1,4 @@
-qclight.gate package
+Gate package
 ====================
 
 Module contents

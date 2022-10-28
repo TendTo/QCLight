@@ -9,7 +9,7 @@ Module contents
    :undoc-members:
    :show-inheritance:
 
-qclight.circuit.bell module
+bell module
 ---------------------------
 
 .. automodule:: qclight.circuit.bell
@@ -17,7 +17,7 @@ qclight.circuit.bell module
    :undoc-members:
    :show-inheritance:
 
-qclight.circuit.boolean\_inner\_product module
+boolean\_inner\_product module
 ----------------------------------------------
 
 .. automodule:: qclight.circuit.boolean_inner_product
@@ -25,7 +25,7 @@ qclight.circuit.boolean\_inner\_product module
    :undoc-members:
    :show-inheritance:
 
-qclight.circuit.circuit module
+circuit module
 ------------------------------
 
 .. automodule:: qclight.circuit.circuit
@@ -33,7 +33,7 @@ qclight.circuit.circuit module
    :undoc-members:
    :show-inheritance:
 
-qclight.circuit.half\_adder module
+half\_adder module
 ----------------------------------
 
 .. automodule:: qclight.circuit.half_adder
@@ -41,7 +41,7 @@ qclight.circuit.half\_adder module
    :undoc-members:
    :show-inheritance:
 
-qclight.circuit.random module
+random module
 -----------------------------
 
 .. automodule:: qclight.circuit.random
@@ -49,10 +49,10 @@ qclight.circuit.random module
    :undoc-members:
    :show-inheritance:
 
-qclight.circuit.sum module
---------------------------
+visual_circuit module
+----------------------------------
 
-.. automodule:: qclight.circuit.sum
+.. automodule:: qclight.circuit.visual_circuit
    :members:
    :undoc-members:
    :show-inheritance:
