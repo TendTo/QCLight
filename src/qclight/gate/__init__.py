@@ -6,6 +6,7 @@ These include:
 - :class:`~qclight.gate.z_gate.ZGate`
 - :class:`~qclight.gate.i_gate.IGate`
 """
+from .gate import Gate
 from .h_gate import HGate
 from .x_gate import XGate
 from .z_gate import ZGate

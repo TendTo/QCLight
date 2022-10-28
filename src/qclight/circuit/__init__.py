@@ -12,3 +12,4 @@ from .bell import BellCircuit
 from .boolean_inner_product import BooleanInnerProductCircuit
 from .random import RandomCircuit
 from .half_adder import HalfAdderCircuit
+from .visual_circuit import QCLVisualCircuit
