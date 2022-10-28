@@ -10,6 +10,6 @@ class RandomCircuit(QCLCircuit):
     to produce a uniform superposition of all possible states.
     """
 
-    def __init__(self, n: int) -> None:
+    def __init__(self, n: "int") -> None:
         super().__init__(n)
         self.h(list(range(n)))

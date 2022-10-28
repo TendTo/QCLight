@@ -308,7 +308,7 @@ class QCLCircuit:
             return
 
         # Show the results only considering the state of the qubits in msr_list
-        msr: dict[int, np.float16] = {}
+        msr: "dict[int, np.float16]" = {}
         for i, digit in enumerate(self.result):
             idx = extract_bits(i, msr_list)
             prb = np.square(digit)

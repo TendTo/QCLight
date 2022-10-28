@@ -16,7 +16,7 @@ class IGate(Gate):
     """
 
     @property
-    def matrix(self) -> npt.NDArray[np.float64]:
+    def matrix(self) -> "npt.NDArray[np.float64]":
         return self.__class__.I
 
     def __str__(self):

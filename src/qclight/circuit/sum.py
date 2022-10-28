@@ -7,7 +7,7 @@ from .circuit import QCLCircuit
 class SumCircuit(QCLCircuit):
     """wip"""
 
-    def __init__(self, a: int, b: int) -> None:
+    def __init__(self, a: "int", b: "int") -> "None":
         self.a = a
         self.b = b
         if a < 0 or b < 0:

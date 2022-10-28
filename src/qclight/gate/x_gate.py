@@ -15,10 +15,10 @@ class XGate(Gate):
         \\end{bmatrix}
     """
 
-    X: npt.NDArray[np.float64] = np.array([[0, 1], [1, 0]])
+    X: "npt.NDArray[np.float64]" = np.array([[0, 1], [1, 0]])
 
     @property
-    def matrix(self) -> npt.NDArray[np.float64]:
+    def matrix(self) -> "npt.NDArray[np.float64]":
         return self.__class__.X
 
     def __str__(self):

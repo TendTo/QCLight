@@ -15,10 +15,10 @@ class HGate(Gate):
         \\end{bmatrix}
     """
 
-    H: npt.NDArray[np.float64] = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
+    H: "npt.NDArray[np.float64]" = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
 
     @property
-    def matrix(self) -> npt.NDArray[np.float64]:
+    def matrix(self) -> "npt.NDArray[np.float64]":
         return self.__class__.H
 
     def __str__(self):

@@ -16,7 +16,7 @@ class BellCircuit(QCLCircuit):
         \\end{align}
     """
 
-    def correlate(self, q1: int, q2: int) -> None:
+    def correlate(self, q1: "int", q2: "int") -> "None":
         """Correlates the two qubits provided.
         The bell state is created by
 

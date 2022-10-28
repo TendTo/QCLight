@@ -27,7 +27,7 @@ class HalfAdderCircuit(QCLCircuit):
         === === ===== =======
     """
 
-    def __init__(self, a: int, b: int) -> None:
+    def __init__(self, a: "int", b: "int") -> "None":
         if a not in (0, 1) or b not in (0, 1):
             raise BitValueError(a if a not in (0, 1) else b)
         self.a = a
