@@ -5,7 +5,6 @@ import numpy as np
 from qclight.error import BinaryStringError, PowerOfTwoLengthError, PositiveValueError
 from qclight.circuit import (
     QCLCircuit,
-    SumCircuit,
     HalfAdderCircuit,
     BellCircuit,
     RandomCircuit,
@@ -178,34 +177,6 @@ class TestCircuit:
         def test_constructor_one_one(self):
             half_adder = HalfAdderCircuit(1, 1)
             assert np.array_equal(half_adder.sum(), 0b10)
-
-    @pytest.mark.skip(reason="Not implemented yet")
-    class TestSumCircuit:
-        """Tests the SumCircuit class."""
-
-        def test_constructor_same_length(self):
-            a, b = 0b101, 0b110
-            sum_c = SumCircuit(a, b)
-            assert sum_c.n == 3 + 3 + 4
-            assert sum_c.sum() == a + b
-
-        def test_constructor_different_length(self):
-            a, b = 0b101, 0b1101
-            sum_c = SumCircuit(a, b)
-            assert sum_c.n == 3 + 4 + 5
-            assert sum_c.sum() == a + b
-
-        def test_constructor_with_zero(self):
-            a, b = 0b0, 0b1111
-            sum_c = SumCircuit(a, b)
-            assert sum_c.n == 1 + 4 + 5
-            assert sum_c.sum() == a + b
-
-        def test_constructor_five_per_five_sums(self):
-            for a in range(10):
-                for b in range(10):
-                    sum_c = SumCircuit(a, b)
-                    assert sum_c.sum() == a + b
 
     class TestBellCircuit:
         """Tests the BellCircuit class."""
