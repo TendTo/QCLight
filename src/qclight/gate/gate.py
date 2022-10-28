@@ -59,5 +59,5 @@ class Gate:
             v = np.kron(v, gate)
         return v
 
-    def __eq__(self, __o: object) -> bool:
-        return self.__class__ is __o.__class__
+    def __eq__(self, other: object) -> bool:
+        return type(other) is self.__class__  # pylint: disable=unidiomatic-typecheck
