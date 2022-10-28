@@ -26,7 +26,7 @@ class BooleanInnerProductCircuit(QCLCircuit):
         b_len = b.bit_length() if b > 0 else 1
         r_idx = a_len + b_len
         super().__init__(a_len + b_len + 1)
-        self._initialize_circuit(f"{a:0{a_len}b}{b:0{b_len}b}0")
+        self.initialize_circuit(f"{a:0{a_len}b}{b:0{b_len}b}0")
         for i in range(min(a_len, b_len)):
             a_idx = a_len - i - 1
             b_idx = a_len + b_len - i - 1
