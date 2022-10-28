@@ -20,15 +20,12 @@ class BellCircuit(QCLCircuit):
         """Correlates the two qubits provided.
         The bell state is created by
 
-        - applying a :attr:`~qclight.gates.gates.Gate.H` gate to the first qubit
+        - applying a :class:`~qclight.gates.gate.h_gate.HGate` gate to the first qubit
         - applying a :attr:`~qclight.circuit.circuit.QCLCircuit.cx` gate between the two qubits
 
         Args:
             q1: first qubit to correlate
             q2: second qubit to correlate
-
-        Raises:
-            NotImplementedError: if the Bell state is not implemented
         """
         self.h(q1)
         self.cx(q1, q2)

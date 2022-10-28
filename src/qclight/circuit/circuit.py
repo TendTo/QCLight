@@ -1,12 +1,13 @@
 """QCLCircuit class"""
 import re
-from typing import Any, Iterable
+from typing import Iterable
 import numpy as np
+import numpy.typing as npt
 from qclight.utils import extract_bits, range_fixed_bits_switch
-from qclight.gates import Gate
+from qclight.gate import HGate, XGate, IGate
 from qclight.error import BinaryStringError, PositiveValueError, PowerOfTwoLengthError
 
-FloatNDArray = np.ndarray[Any, np.dtype[np.float64]]
+FloatNDArray = npt.NDArray[np.float64]
 
 
 class QCLCircuit:
@@ -33,7 +34,7 @@ class QCLCircuit:
     @n.setter
     def n(self, n: "int") -> "None":
         self._n = n
-        self._identity = self.tp([Gate.I] * n)
+        self._identity = IGate().matrix_of_size(n)
 
     @property
     def state(self) -> "FloatNDArray":
@@ -117,47 +118,6 @@ class QCLCircuit:
         self.x(x_list)
         self.h(h_list)
 
-    def expand_gate(
-        self, single_gate: "FloatNDArray", positions: "int | list[int]"
-    ) -> "FloatNDArray":
-        """Expands a single gate so that all the qubits are included.
-        All the qubits in the positions specified by position will be affected by the gate,
-        while the others will be multiplied by the identity matrix.
-
-        Args:
-            single_gate: gate to be expanded
-            i: position or list of positions directly affected by the gate
-
-        Returns:
-            expanded gate
-        """
-        expanded_gate = [Gate.I] * self.n
-        if isinstance(positions, int):
-            positions = [positions]
-        if isinstance(positions, list):
-            for position in positions:
-                expanded_gate[position] = single_gate
-        return self.tp(expanded_gate)
-
-    def tp(self, gates: "list[FloatNDArray]") -> "FloatNDArray":
-        """Calculates the tensor product between all the gates in the list.
-
-        Args:
-            gates: list of gates to be multiplied
-
-        Raises:
-            ValueError: the list of gates is empty
-
-        Returns:
-            the tensor product of all the gates in the list
-        """
-        if len(gates) == 0:
-            raise ValueError("ql must not be empty")
-        v = gates[0]
-        for gate in gates[1:]:
-            v = np.kron(v, gate)
-        return v
-
     def x(self, i: "int | list[int]") -> "None":
         """Applies a :attr:`~qclight.gates.gates.Gate.X` gate to the qubit in position i.
 
@@ -178,7 +138,7 @@ class QCLCircuit:
         Args:
             i: position of the qubit to be affected by the gate
         """
-        self.gates.append(self.expand_gate(Gate.X, i))
+        self.gates.append(XGate().matrix_of_size(self.n, i))
 
     def h(self, i: "int | list[int]") -> "None":
         """Applies a :attr:`~qclight.gates.gates.Gate.H` gate to the qubit in position i.
@@ -186,7 +146,7 @@ class QCLCircuit:
         Args:
             i: position of the qubit to be affected by the gate
         """
-        self.gates.append(self.expand_gate(Gate.H, i))
+        self.gates.append(HGate().matrix_of_size(self.n, i))
 
     def cx(self, c: "int", t: "int") -> "None":
         """Applies a cx gate controlled by the qubit in position c.
