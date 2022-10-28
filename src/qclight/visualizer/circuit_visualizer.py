@@ -95,7 +95,7 @@ class CircuitVisualizer:
             state: initial state of the circuit
         """
         self._n = int(np.log2(len(state)))
-        state_str = f"{np.where(state == 1)[0][0]:0{self._n}b}"
+        state_str = f"{np.where(state == 1)[0][0]:0{self._n}b}"[::-1]
 
         self._qubits = []
         for i, qubit in enumerate(state_str):
@@ -124,7 +124,7 @@ class CircuitVisualizer:
                 min_idx.append(i)
                 continue
             break
-        return min(min_idx) if min_idx else -1
+        return min(min_idx) if len(min_idx) > 0 else -1
 
     def __str__(self):
         return "\n".join(["".join([str(c) for c in q]) for q in self._qubits])

@@ -63,7 +63,7 @@ class Connector:
 
     @classmethod
     def qubit(
-        cls, idx: "int", label: "str" = "q", initial_state: "str" = "|0>"
+        cls, idx: "int", label: "str" = "q", initial_state: "int | str" = 0
     ) -> "Connector":
         """Creates a qubit connector.
         It indicates the name and index of the qubit, as well as its initial state.
@@ -76,7 +76,7 @@ class Connector:
         Returns:
             new connector
         """
-        return cls(f"{label}_{idx} {initial_state}")
+        return cls(f"{label}_{idx} |{initial_state}>")
 
     def is_empty(self) -> "bool":
         """Checks if the connector is an empty connector.
@@ -86,5 +86,11 @@ class Connector:
         """
         return self._content == "───"
 
-    def __str__(self):
+    def __eq__(self, other: object) -> "bool":
+        return (
+            isinstance(other, self.__class__)
+            and self._content == other._content  # type: ignore
+        )
+
+    def __str__(self) -> "str":
         return self._content

@@ -3,7 +3,7 @@ from typing import Iterable
 import numpy as np
 import numpy.typing as npt
 from qclight.gate import HGate, XGate, IGate
-from qclight.visualizer.circuit_visualizer import CircuitVisualizer
+from qclight.visualizer import CircuitVisualizer
 from .circuit import QCLCircuit
 
 FloatNDArray = npt.NDArray[np.float64]
