@@ -33,7 +33,7 @@ class HalfAdderCircuit(QCLCircuit):
         self.a = a
         self.b = b
         super().__init__(4)
-        self._initialize_circuit(f"{a}{b}00")
+        self.initialize_circuit(f"{a}{b}00")
         # xor between a and b
         self.cx(0, 3)
         self.cx(1, 3)

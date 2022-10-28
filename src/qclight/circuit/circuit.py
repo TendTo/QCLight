@@ -99,7 +99,7 @@ class QCLCircuit:
             self.n = state
         return self._state
 
-    def _initialize_circuit(self, state: "str") -> "None":
+    def initialize_circuit(self, state: "str") -> "None":
         """Builds a circuit that output the provided state starting from the all-zero state.
 
         Args:
@@ -119,7 +119,7 @@ class QCLCircuit:
         self.h(h_list)
 
     def x(self, i: "int | list[int]") -> "None":
-        """Applies a :attr:`~qclight.gates.gates.Gate.X` gate to the qubit in position i.
+        """Applies a :class:`~qclight.gate.x_gate.XGate` gate to the qubit in position i.
 
         | i | X |
         |---|---|
@@ -141,7 +141,7 @@ class QCLCircuit:
         self.gates.append(XGate().matrix_of_size(self.n, i))
 
     def h(self, i: "int | list[int]") -> "None":
-        """Applies a :attr:`~qclight.gates.gates.Gate.H` gate to the qubit in position i.
+        """Applies a :class:`~qclight.gate.h_gate.HGate` gate to the qubit in position i.
 
         Args:
             i: position of the qubit to be affected by the gate
