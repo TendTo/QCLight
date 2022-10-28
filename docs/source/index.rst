@@ -6,6 +6,10 @@
 Welcome to QCLight's documentation!
 ===================================
 
+QCLight is a simple and lightweight Quantum Computing simulator built with python3 for educational purposes.
+
+The source code is available `Github <https://github.com/TendTo/QCLight>`_.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
