@@ -1,20 +1,30 @@
-# pylint: disable=missing-function-docstring,too-few-public-methods,redefined-outer-name
+# pylint: disable=missing-function-docstring,too-few-public-methods,redefined-outer-name,protected-access
 """Test circuit package."""
 import pytest
+from pytest_mock import MockerFixture
 import numpy as np
 from qclight.error import BinaryStringError, PowerOfTwoLengthError, PositiveValueError
+from qclight.gate import XGate, HGate
 from qclight.circuit import (
     QCLCircuit,
     HalfAdderCircuit,
     BellCircuit,
     RandomCircuit,
     BooleanInnerProductCircuit,
+    QCLVisualCircuit,
 )
 
 
 @pytest.fixture(scope="function")
-def circuit():
+def circuit() -> QCLCircuit:
     return QCLCircuit(3)
+
+
+@pytest.fixture(scope="function")
+def visual_circuit(mocker: MockerFixture) -> QCLVisualCircuit:
+    circuit = QCLVisualCircuit(3)
+    circuit._visualizer = mocker.Mock(wraps=circuit._visualizer)
+    return circuit
 
 
 class TestCircuit:
@@ -264,3 +274,65 @@ class TestCircuit:
             b = 0b1111
             inner_product = BooleanInnerProductCircuit(a, b)
             assert inner_product.inner_product() is False
+
+    class TestQCLVisualCircuit:
+        """Tests the QCLVisualCircuit class"""
+
+        def test_constructor(self):
+            circuit = QCLVisualCircuit(3)
+            assert circuit.n == 3
+            assert circuit._visualizer is not None
+
+        def test_x_gate_single(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.x(0)
+            visual_circuit._visualizer.append_standalone.assert_called_once_with(
+                XGate(), 0
+            )
+
+        def test_x_gate_multiple(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.x([0, 1])
+            visual_circuit._visualizer.append_standalone.assert_called_once_with(
+                XGate(), [0, 1]
+            )
+
+        def test_h_gate_single(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.h(0)
+            visual_circuit._visualizer.append_standalone.assert_called_once_with(
+                HGate(), 0
+            )
+
+        def test_h_gate_multiple(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.h([0, 1])
+            visual_circuit._visualizer.append_standalone.assert_called_once_with(
+                HGate(), [0, 1]
+            )
+
+        def test_cx_gate(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.cx(0, 1)
+            visual_circuit._visualizer.append_controlled.assert_called_once_with(
+                XGate(), 0, 1
+            )
+
+        def test_ccx_gate(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.ccx(0, 1, 2)
+            visual_circuit._visualizer.append_controlled.assert_called_once_with(
+                XGate(), (0, 1), 2
+            )
+
+        def test_mcx_gate(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.mcx((0, 1), 2)
+            visual_circuit._visualizer.append_controlled.assert_called_once_with(
+                XGate(), (0, 1), 2
+            )
+
+        def test_barrier_all(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.barrier()
+            visual_circuit._visualizer.append_barrier.assert_called_once_with(None)
+
+        def test_barrier_qubits(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.barrier([0, 1])
+            visual_circuit._visualizer.append_barrier.assert_called_once_with([0, 1])
+
+        def test_barrier_qubits_invalid(self, visual_circuit: QCLVisualCircuit):
+            visual_circuit.barrier([20])
+            visual_circuit._visualizer.append_barrier.assert_called_once_with([20])

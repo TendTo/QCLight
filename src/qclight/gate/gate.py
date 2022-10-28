@@ -58,3 +58,6 @@ class Gate:
         for gate in gates[1:]:
             v = np.kron(v, gate)
         return v
+
+    def __eq__(self, __o: object) -> bool:
+        return self.__class__ is __o.__class__

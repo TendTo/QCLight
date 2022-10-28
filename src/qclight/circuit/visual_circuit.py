@@ -48,7 +48,7 @@ class QCLVisualCircuit(QCLCircuit):
         self._visualizer.append_controlled(XGate(), c, t)
 
     def ccx(self, c1: "int", c2: "int", t: "int") -> "None":
-        super().ccx(c1, c2, t)
+        super().mcx((c1, c2), t)
         self._visualizer.append_controlled(XGate(), (c1, c2), t)
 
     def mcx(self, c_bits: "Iterable[int]", t: "int") -> "None":
