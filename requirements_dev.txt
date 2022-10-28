@@ -1,6 +1,6 @@
 black
 pytest
-bumpver
+pytest-mock
 pylint
 isort
 mypy

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qclight"
-version = "0.0.1"
+dynamic = ['version']
 description = "A lightweught quantum computing simulator"
 readme = "README.md"
 authors = [{ name = "TendTo", email = "casablancaernesto@gmail.com" }]

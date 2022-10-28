@@ -7,11 +7,10 @@ QCLight is theoretically able to simulate quantum circuits with up to any number
 but keep in mind that the operations scale exponentially with the number of qubits involved.
 """
 
-from importlib import resources
 from .circuit.circuit import QCLCircuit
 
 # Version of the QCLight package
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 # Read URL of the Real Python feed from config file
 # _cfg = resources.read_text("reader", "config.toml")
