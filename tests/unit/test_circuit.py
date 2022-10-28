@@ -123,6 +123,23 @@ class TestCircuit:
             circuit.ccx(0, 1, 2)
             assert np.allclose(circuit.run(), [0, 0, 0, 0, 0, 0, 0, 1])
 
+        def test_mcx_gate_three_c_false(self):
+            circuit = QCLCircuit(4)
+            circuit.mcx([0, 1, 2], 3)
+            assert np.allclose(
+                circuit.run(), [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            )
+
+        def test_mcx_gate_three_c_true(self):
+            circuit = QCLCircuit(4)
+            circuit.x(0)
+            circuit.x(1)
+            circuit.x(2)
+            circuit.mcx([0, 1, 2], 3)
+            assert np.allclose(
+                circuit.run(), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+            )
+
         def test_swap_gate_equal(self, circuit: QCLCircuit):
             circuit.swap(0, 1)
             assert np.allclose(circuit.run(), [1, 0, 0, 0, 0, 0, 0, 0])
