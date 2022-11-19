@@ -6,7 +6,6 @@ as vectors and matrices, and NumPy allows to improve the performance of this kin
 QCLight is theoretically able to simulate quantum circuits with up to any number of qubits,
 but keep in mind that the operations scale exponentially with the number of qubits involved.
 """
-
 from .circuit.circuit import QCLCircuit
 
 # Version of the QCLight package

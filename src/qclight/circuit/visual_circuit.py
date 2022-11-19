@@ -60,7 +60,7 @@ class QCLVisualCircuit(QCLCircuit):
         It can help to separate different parts of the circuit.
 
         Args:
-            qubits: qubits to which the barrier is applied
+            qubits: qubits to which the barrier is applied. If None, it is applied to all of them.
         """
         self._visualizer.append_barrier(qubits)
 

@@ -1,4 +1,4 @@
-"""Contains all the standard gates that can be used in the circuit.
+"""Contains all the standard quantum gates that can be used in the circuit.
 These include:
 
 - :class:`~qclight.gate.h_gate.HGate`
