@@ -15,8 +15,10 @@ Subpackages
 .. toctree::
    :maxdepth: 2
 
+   qclight.algorithm
    qclight.circuit
    qclight.error
    qclight.gate
-   qclight.visualizer
+   qclight.protocol
    qclight.utils
+   qclight.visualizer
