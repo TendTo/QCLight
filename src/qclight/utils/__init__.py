@@ -4,6 +4,7 @@ These are mostly math and bit manipulation functions.
 import re
 from typing import Iterator
 from qclight.error import BinaryStringError, OutOfRangeError
+from .event_emitter import EventEmitter
 
 
 def bitstring_to_int(
