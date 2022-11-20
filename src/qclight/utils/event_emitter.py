@@ -22,7 +22,7 @@ class EventEmitter:
         """
         self._events[event_name].append(callback)
 
-    def emit(self, event_name, *args, **kwargs) -> "None":
+    def emit(self, event_name: str, *args, **kwargs) -> "None":
         """Emits an event.
 
         Args:
@@ -30,8 +30,9 @@ class EventEmitter:
             *args: arguments to pass to the callbacks
             **kwargs: keyword arguments to pass to the callbacks
         """
-        for callback in self._events[event_name]:
-            callback(*args, **kwargs)
+        for callbacks in self._events[event_name]:
+            for callback in callbacks:  # type: ignore
+                callback(*args, **kwargs)
 
     def off(self, event_name, callback) -> "None":
         """Removes a callback from an event.
