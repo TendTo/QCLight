@@ -1,28 +1,37 @@
 """Protocol class."""
-from typing import Callable, TypedDict, Literal, overload, Any
+from typing import TYPE_CHECKING, Callable, TypedDict, Literal
 from qclight.utils import EventEmitter
-from .agent import Agent
 
-MessageEventName = Literal["message_sent", "message_transmitted", "message_received"]
-SetupEventName = Literal["start", "stop"]
-EventName = Literal[SetupEventName, MessageEventName]
-ProtocolCallback = Callable[["Protocol", EventName], None]
-ProtocolMessageCallback = Callable[["Protocol", EventName, Any], None]
+if TYPE_CHECKING:
+    from .agent import Agent
+    from .message import Message
+
+EventName = Literal["start", "stop", "message_sent", "message_transmitted", "message_received"]
+ProtocolCallback = Callable[["Protocol"], None]
 
 
 class ProtocolEvents(TypedDict):
     """Protocol events."""
 
     start: "list[ProtocolCallback]"
-    message_sent: "list[ProtocolMessageCallback]"
-    message_received: "list[ProtocolMessageCallback]"
+    message_sent: "list[ProtocolCallback]"
+    message_received: "list[ProtocolCallback]"
     message_transmitted: "list[ProtocolCallback]"
     stop: "list[ProtocolCallback]"
 
 
 class Protocol(EventEmitter):
-    def __init__(self) -> None:
+    """Agents take part in the protocol by sending messages to each other,
+    causing the protocol object to emit events that the agents can listen to and react to.
+
+    The message can be intercepted by a bad actor, which can then modify the message
+    before it is received by the intended recipient.
+    """
+
+    def __init__(self) -> "None":
         super().__init__()
+        self.message: "Message | None" = None
+        self._running = False
         self._agents: "set[Agent]" = set()
         self._events: ProtocolEvents = {
             "start": [],
@@ -32,49 +41,45 @@ class Protocol(EventEmitter):
             "stop": [],
         }
 
-    @overload
-    def on(self, event_name: "SetupEventName", callback: "ProtocolCallback") -> "None":
-        ...
-
-    @overload
-    def on(self, event_name: "MessageEventName", callback: "ProtocolMessageCallback") -> "None":
-        ...
-
     def on(self, event_name: "EventName", callback: "Callable") -> "None":
         super().on(event_name, callback)
 
-    @overload
-    def emit(self, event_name: "SetupEventName") -> None:
-        ...
+    def emit(self, event_name: "EventName", *args, **kwargs) -> "None":
+        super().emit(event_name, self, *args, **kwargs)
 
-    @overload
-    def emit(self, event_name: "MessageEventName", message: Any) -> None:
-        ...
-
-    def emit(self, event_name: "EventName", message: Any = None) -> None:
-        if message is None:
-            super().emit(self, event_name)
-        else:
-            super().emit(self, event_name, message)
-
-    def add_agent(self, *agents: "Agent") -> None:
+    def add_agent(self, *agents: "Agent") -> "None":
         """Adds a participant to the protocol."""
-        self._agents.union(agents)
+        self._agents = self._agents.union(agents)
 
-    def receive_message(self, message: Any) -> None:
-        """Receives a message from the protocol."""
-        self.emit("message_received", message)
-
-    def start(self) -> None:
+    def start(self) -> "None":
         """Starts the protocol."""
+        if self._running:
+            raise Exception("Protocol already started")
+        self._running = True
         for agent in self._agents:
             for event_name, callback in agent.events.items():
                 self.on(event_name, callback)  # type: ignore
         self.emit("start")
 
-    def stop(self) -> None:
+    def send_message(self, message: "Message") -> "None":
+        """Sends a message to the protocol."""
+        self.message = message
+        self.emit("message_sent")
+        self.transmit_message()
+
+    def transmit_message(self) -> "None":
+        """Transmits a message to the protocol."""
+        self.emit("message_transmitted")
+        self.receive_message()
+
+    def receive_message(self) -> "None":
+        """Receives a message from the protocol."""
+        self.emit("message_received")
+
+    def stop(self) -> "None":
         """Ends the protocol."""
         self.emit("stop")
         for agent in self._agents:
             for event_name, callback in agent.events.items():
                 self.off(event_name, callback)
+        self._running = False

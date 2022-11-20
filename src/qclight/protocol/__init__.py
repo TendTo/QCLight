@@ -10,3 +10,5 @@ The protocols implemented in this module are `BB84 <https://en.wikipedia.org/wik
 """
 from .protocol import Protocol
 from .agent import Agent
+from .message import Message
+from .verbose_protocol import VerboseProtocol

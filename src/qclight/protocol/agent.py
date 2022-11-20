@@ -1,13 +1,9 @@
 """Agent class."""
-from typing import overload, Callable
-from .protocol import (
-    ProtocolEvents,
-    ProtocolCallback,
-    ProtocolMessageCallback,
-    EventName,
-    SetupEventName,
-    MessageEventName,
-)
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .protocol import ProtocolEvents, ProtocolCallback, EventName
+    from .message import Message
 
 
 class Agent:
@@ -15,7 +11,7 @@ class Agent:
 
     def __init__(self, name: "str") -> "None":
         self.name = name
-        self._events: ProtocolEvents = {
+        self._events: "ProtocolEvents" = {
             "start": [],
             "message_sent": [],
             "message_received": [],
@@ -28,19 +24,21 @@ class Agent:
         """Events the agent will react to."""
         return self._events
 
-    @overload
-    def add_event(self, event_name: "SetupEventName", callback: "ProtocolCallback") -> "None":
-        ...
+    def get_events(self, event_name: "EventName") -> "list[ProtocolCallback]":
+        """Gets the events the agent will react to."""
+        return self._events[event_name]
 
-    @overload
-    def add_event(
-        self, event_name: "MessageEventName", callback: "ProtocolMessageCallback"
+    def set_events(
+        self, event_name: "EventName", callbacks: "ProtocolCallback | list[ProtocolCallback]"
     ) -> "None":
-        ...
+        """Sets the events the agent will react to."""
+        if not isinstance(callbacks, list):
+            callbacks = [callbacks]
+        self._events[event_name] = callbacks
 
-    def add_event(self, event_name: "EventName", callback: "Callable") -> "None":
+    def add_event(self, event_name: "EventName", callback: "ProtocolCallback") -> "None":
         """Adds an event to the agent."""
         self._events[event_name].append(callback)
 
-    def __str__(self) -> "str":
-        return f"Agent {self.name}"
+    def __repr__(self) -> "str":
+        return f"Agent[{self.name}]"
