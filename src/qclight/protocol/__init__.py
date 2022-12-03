@@ -12,3 +12,5 @@ from .protocol import Protocol
 from .agent import Agent
 from .message import Message
 from .verbose_protocol import VerboseProtocol
+from .bb84 import BB84
+from .e91 import E91
