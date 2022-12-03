@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.viewcode",  # add source code links to the documentation
     "sphinx_rtd_dark_mode",  # dark mode for ReadTheDocs
     "sphinx_autodoc_typehints",  # improves the type hinting
+    "sphinxcontrib.plantuml",  # to use plantuml diagrams
 ]
 
 templates_path = ["_templates"]
@@ -60,6 +61,7 @@ html_context = {
 # Configuration of "sphinx_autodoc_typehints"
 typehints_use_rtype = False
 typehints_defaults = "comma"
+plantuml = "java -jar /home/tend/.vscode/extensions/jebbs.plantuml-2.17.4/plantuml.jar"
 
 
 def setup(app):
