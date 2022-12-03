@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .protocol import ProtocolEvents, ProtocolCallback, EventName
-    from .message import Message
 
 
 class Agent:
@@ -29,14 +28,18 @@ class Agent:
         return self._events[event_name]
 
     def set_events(
-        self, event_name: "EventName", callbacks: "ProtocolCallback | list[ProtocolCallback]"
+        self,
+        event_name: "EventName",
+        callbacks: "ProtocolCallback | list[ProtocolCallback]",
     ) -> "None":
         """Sets the events the agent will react to."""
         if not isinstance(callbacks, list):
             callbacks = [callbacks]
         self._events[event_name] = callbacks
 
-    def add_event(self, event_name: "EventName", callback: "ProtocolCallback") -> "None":
+    def add_event(
+        self, event_name: "EventName", callback: "ProtocolCallback"
+    ) -> "None":
         """Adds an event to the agent."""
         self._events[event_name].append(callback)
 
